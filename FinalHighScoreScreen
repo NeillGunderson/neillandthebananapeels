@@ -1,0 +1,134 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class HighscoreTable : MonoBehaviour
+{
+    private Transform entryContainer;
+    private Transform entryTemplate;
+    private List<Transform> highscoreEntryTransformList;
+    private List<HighScoreEntry> highscoreEntryList;
+    
+    public void Awake() // used to initialize any variable or game state when the game starts.
+    {
+
+        entryContainer = transform.Find("HighScoreContainer"); // finds container for highScores
+        entryTemplate = entryContainer.Find("HighScoreEntryTemplate"); // uses the container to find the Template and set = to entryTemplate
+        entryTemplate.gameObject.SetActive(false);
+
+        AddHighScoreEntry1(30, "KAD");
+        
+
+        /*
+        highscoreEntryList = new List<HighScoreEntry>()
+        {
+        new HighScoreEntry { score = 0, name = "CAT" },
+        new HighScoreEntry { score = 0, name = "CzT" },
+        new HighScoreEntry { score = 0, name = "CfT" },
+        new HighScoreEntry { score = 0, name = "ChT" },
+        new HighScoreEntry { score = 0, name = "CAT" },
+        new HighScoreEntry { score = 0, name = "CAj" },
+        new HighScoreEntry { score = 0, name = "CAb" },
+        new HighScoreEntry { score = 0, name = "CAv" },
+        new HighScoreEntry { score = 0, name = "CAr" },
+        new HighScoreEntry { score = 0, name = "CAy" }
+        };
+        */
+
+        
+        string jsonString = PlayerPrefs.GetString("highscoreTable");
+        Highscores highscores =JsonUtility.FromJson<Highscores>(jsonString);
+        
+        // creates highscoreEntryTransformList loops through to add the entries to the list
+        highscoreEntryTransformList = new List<Transform>();
+        foreach (HighScoreEntry highScoreEntry in highscores.highscoreEntryList)
+        {
+            CreateHighScoreEntryTransform(highScoreEntry, entryContainer, highscoreEntryTransformList);
+        } // ends foreach loop
+        
+        
+        // Code below was used to save the original template to the PlayPref, isn't used everytime the game is ran but i kept it in here so we can see where the save is coming from
+        /*
+        Highscores highscores = new Highscores { highscoreEntryList = highscoreEntryList };
+        string jsonString = JsonUtility.ToJson(highscores);
+        PlayerPrefs.SetString("highscoreTable", jsonString);
+        PlayerPrefs.Save();
+        Debug.Log(PlayerPrefs.GetString("highscoreTable"));
+        */
+       
+
+    } // ends Awake() method
+
+      // CreateHighScoreEntryTranform creates the graphical template with the highscore entries on them
+    private void CreateHighScoreEntryTransform(HighScoreEntry highscore, Transform container, List<Transform> transformList)
+    {
+        float templateHeight = 25f; // initializes float cariable for template height
+        Transform entryTransform = Instantiate(entryTemplate, container); // enstantiates the entryTemplate
+        RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>(); // RectTranform objects in Unity handle their position in the camera view
+        entryRectTransform.anchoredPosition = new Vector2(0, -templateHeight * transformList.Count); 
+        entryTransform.gameObject.SetActive(true);
+
+        int rank = transformList.Count + 1; // count for the ranks on the scoreboard
+        entryTransform.Find("posText").GetComponent<Text>().text = rank.ToString(); // method finds the text that is entered in a Unity Text box called posText and sets = to rank string
+
+        int score = highscore.score;
+        entryTransform.Find("scoreText").GetComponent<Text>().text = score.ToString(); // method find the text that is entered in scoreText box and makes it = score string
+
+        string name = highscore.name;
+        entryTransform.Find("nameText").GetComponent<Text>().text = name; // method finds the text that is in nameText box and makes it = name string
+        transformList.Add(entryTransform); // Add method then adds all these components to transformList
+    }
+    
+    private void AddHighScoreEntry1(int score, string name)
+    {
+        HighScoreEntry newhighscoreEntry = new HighScoreEntry { score = score, name = name }; // creates a entry
+        
+        string jsonString = PlayerPrefs.GetString("highscoreTable"); // loads the saved highscores in PlayPrefs
+        Highscores highscores = JsonUtility.FromJson<Highscores>(jsonString);
+
+        // iterates through the saved Highscores comparing the new entry score to each saved score until it finds one that the new entry is greater than
+        // it then replaces it with the new entry
+        for (int i = 0; i < highscores.highscoreEntryList.Count; i++)
+        {
+            bool breaksLoop = false;
+            for (int j = i + 1; j < highscores.highscoreEntryList.Count; j++)
+            {
+                if (newhighscoreEntry.score > highscores.highscoreEntryList[i].score)
+                {
+                    HighScoreEntry temp = highscores.highscoreEntryList[i]; // creates temporary variable for highScore entry
+                    highscores.highscoreEntryList[i] = newhighscoreEntry; // swaps the entries
+                    highscores.highscoreEntryList[j] = temp;
+                    breaksLoop = true;
+                    break;
+                } // ends if clause
+            
+            } // ends j for loop
+            if (breaksLoop)
+            {
+                break;
+            }
+        } // ends i for loop
+
+        string json = JsonUtility.ToJson(highscores); // saves the new highscore list
+        PlayerPrefs.SetString("highscoreTable", json);
+        PlayerPrefs.Save(); // saves the PlayerPrefs HighScore Board
+        
+    }
+    
+    private class Highscores
+    {
+        // Creates a Highscores object that is a List of entries
+        public List<HighScoreEntry> highscoreEntryList;
+    }
+
+    [System.Serializable] // parameters for JsonUtitlity must be Serialized 
+    private class HighScoreEntry
+    {
+        // Entries have to be serializable in order to work with JsonUtility
+
+        public int score; // entry score
+        public string name; // entry name
+
+    }
+} // ends HighScoreTable class
