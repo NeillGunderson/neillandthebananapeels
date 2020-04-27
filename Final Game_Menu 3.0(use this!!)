@@ -1,0 +1,74 @@
+package Game;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+
+public class Game_Menu_Screen {
+
+    JFrame frame = new JFrame();
+    Panel panel = new Panel();
+    
+    JButton button1 = new JButton("Start");
+ 
+    
+    
+    JButton button2 = new JButton("Quit");
+
+    public Game_Menu_Screen() {
+        panel.add(button1);
+        panel.add(button2);
+        frame.add(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.pack();
+        frame.setSize(840, 480);
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(Game_Menu_Screen::new);
+    }
+
+    class Panel extends JPanel {
+        Timer timer;
+
+        
+        String[] images = {"/Users/codyvue/Downloads/back.png"};
+
+        BufferedImage image;
+        int counter;
+
+        public Panel() {
+            
+            timer = new Timer(0, ae -> {
+                try {
+                    image = ImageIO.read(new File(images[counter]));
+                    repaint();
+                    revalidate();
+                    counter++;
+                    if (counter == images.length) {
+                        counter = 0;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            timer.setRepeats(true);
+            timer.setDelay(5000);
+            timer.start();
+
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(image, 0, 0, null);
+        }
+
+    }
+}
