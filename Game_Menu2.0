@@ -1,0 +1,77 @@
+package Game;
+
+import javax.swing.*;
+
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JFrame;
+
+
+
+public class GameMenu2 extends JFrame{  
+	
+
+	public GameMenu2() {
+	
+	}
+	
+	
+public static void main(String[] args) {  
+	new GameMenu2();
+	
+    
+	JFrame f = new JFrame("I Hate This Game"); 
+    final JTextField tf = new JTextField();
+    tf.setBounds(400, 100, 200, 100);
+    
+    
+    f.getContentPane().setBackground(Color.BLACK);
+    
+    
+    
+    JButton b1 = new JButton("Start");  
+   
+    b1.setBounds(400, 100, 200, 100);  
+    b1.addActionListener(new ActionListener() {
+    
+    public void actionPerformed(ActionEvent e) {
+    	tf.setText("Game Started");
+      }
+    });
+    	
+    f.add(b1); f.add(tf);
+    
+    
+  
+    f.setSize(1000,1000);  
+    f.setLayout(null);  
+    f.setVisible(true);   
+    
+
+    JButton b2 = new JButton("Scores");
+    b2.setBounds(400, 300, 200, 100);
+    b2.addActionListener(new ActionListener() {
+    
+    public void actionPerformed(ActionEvent e) {
+    	tf.setText("Score Board");
+      }
+    });
+    
+    f.add(b2); f.add(tf);
+    
+    JButton b3 = new JButton("Quit");
+    b3.setBounds(400, 500, 200, 100);
+    b3.addActionListener(new ActionListener() {
+    
+    public void actionPerformed(ActionEvent e) {
+    	tf.setText("Qutting");
+      }
+    });
+    
+    f.add(b3); f.add(tf);
+    
+    
+}  
+}  
