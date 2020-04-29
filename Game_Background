@@ -17,25 +17,25 @@ public class HateThisGame extends JPanel {
         public void keyPressed(KeyEvent e) {//Implementing keyPressed method  which take keyEvent as an argument by calling it e.
             int keyCode = e.getKeyCode();
 
-            if (keyCode == e.VK_LEFT) {
+            if (keyCode == e.Arrow_LEFT) {
                 if (x <= 8)
                     x = 8;
                 else
                     x += -5;
             }
-            if (keyCode == e.VK_RIGHT) {
+            if (keyCode == e.Arrow_RIGHT) {
                 if (x >= 235)
                     x = 235;
                 else
                     x += +5;
             }
-            if (keyCode == e.VK_UP) {
+            if (keyCode == e.Arrow_UP) {
                 if (y <= 18)
                     y = 18;
                 else
                     y += -5;
             }
-            if (keyCode == e.VK_DOWN) {
+            if (keyCode == e.Arrow_DOWN) {
                 if (y >= 235)
                     y = 235;
                 else
